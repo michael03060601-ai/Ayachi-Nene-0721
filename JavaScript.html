@@ -1,10 +1,10 @@
 <html>
 <head>
-    <title>light novel（maybe）</title>
+    <title>Escape from Epstein Island （xd）</title>
 <style>
 
 body{
-display: block;
+display: flex;
 justify-content: center;
 box-sizing: border-box;
 gap: 30px;
@@ -66,26 +66,49 @@ h2{color: white;
 <p style="text-align: center;">Michael</p>
 </div>
 
-<div id="welcome" class="text">
+<div id="welcome" class="text content-route">
 <h2>Well,here is just a test of javascript</h2>
 <h2>So,don't care about the content</h2>
 <nav>
-<p><a href="index.html">HOMEPAGE</a></p>
+<p><a href="index.html" target="_blank">HOMEPAGE</a></p>
 </nav>
+
+<button onclick="showRoute('route1')">Start Story</button>
+
 </div>
-<div id ="route1" class="text">
+<div id ="route1" class="text content-route" style="display:none;">
 <h2>Escape from Epstein Island</h2>
 <p>You woke up in a dark room, your head pounding and your vision blurry. You had no memory of how you got there, but you knew one thing for sure: you had to escape.......</p>
+<button onclick="showRoute('welcome')">back to last page</button>
+<button onclick="showRoute('route2')">Continue Story</button>
 </div>
 
-<div id ="route2" class="text">
+
+<div id ="route2" class="text content-route" style="display:none;">
 <h2>Escape from Epstein Island</h2>
 <p>You finally escaped from the basement....</p>
+<button onclick="showRoute('route1')">back to last page</button>
 </div>
 
 
 <script>
 alert("here is a light novel,i hope you like it");
+
+function showRoute(routeId) {
+
+  const allRoutes = document.querySelectorAll('.content-route');
+
+  allRoutes.forEach(route => {
+    route.style.display = 'none';
+  });
+
+  const targetRoute = document.getElementById(routeId);
+
+  if (targetRoute) {
+    targetRoute.style.display = 'block';
+  }
+}
+
 </script>
 </body>
 </html>
