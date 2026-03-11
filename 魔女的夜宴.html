@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>サノバウィッチ</title>
+<style>
+
+body{
+display: flex;
+justify-content: center;
+box-sizing: border-box;
+gap: 30px;
+margin: 0;
+}
+body{background: linear-gradient(130deg, hwb(66 59% 0%) 0%, #46b4fd 100%);
+background-attachment: fixed;}
+
+
+
+.setting{background-color: rgba(47, 48, 48, 0.9);
+  position: fixed;
+  left: 0%;
+  top : 0%;
+width : 80px;
+padding: 20px ;
+height: 100vh;
+margin: 0 auto;
+}
+
+.text{background-color: rgba(47, 48, 48, 0.9);
+   overflow-y: auto; 
+width : 850px;
+padding: 50px ;
+min-height: 100vh;
+margin-left: 180px;
+}
+.Homepage{overflow-y: auto;
+}
+.text img{
+  transition: transform 0.3s ease;
+  margin: 6px;
+}
+
+.text img:hover{
+  transform: scale(1.05);
+}
+
+
+.setting img{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+a{color: white;}
+.setting{
+  box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+}
+
+h1 {color: white;}
+p{color: white;}
+</style>
+</head>
+<body>
+<div class="setting">
+<img src="114514/QvajnMXdraB1JPLy.jpg"/>
+<p style="text-align: center;">Michael</p>
+<button id="Homepage" onclick="window.location.href='index.html'">Homepage</button>
+</div>
+<div id="Explanation" class="text content-route ">
+    <h1>EXPLANATION</h1>
+    <p>There is a light novel about...  <p style="font-size: 10px;">(well, i don't even know what am i going to write about)</p></p>
+<p>The idea is from the <a href="https://store.steampowered.com/app/888790/Sabbat_of_the_Witch/" target="_blank">SABBAT OF THE WITCH</a></p>
+<p>so...</p>
+<p>i think it s enough</p>
+<p>cuz i knew nobody cares about it </p>
+<p>never mind, i will write something</p>
+<button onclick="showRoute('route1')">Start reading</button>
+</div>
+
+<div id="route1" class="text content-route" style="display: none;">
+    <h1>1-1</h1>
+    <p>this is a example</p>
+</div>
+
+
+<script>
+function showRoute(routeId) {
+
+  const allRoutes = document.querySelectorAll('.content-route');
+
+  allRoutes.forEach(route => {
+    route.style.display = 'none';
+  });
+
+  const targetRoute = document.getElementById(routeId);
+
+  if (targetRoute) {
+    targetRoute.style.display = 'block';
+  }
+}
+</script>
+
+
+</body>
+</html>
