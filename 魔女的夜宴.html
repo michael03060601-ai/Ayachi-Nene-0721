@@ -7,10 +7,42 @@
 body{ display: flex; justify-content: center; box-sizing: border-box; gap: 30px; margin: 0; }
 body{ background: linear-gradient(130deg, hwb(66 59% 0%) 0%, #46b4fd 100%); background-attachment: fixed; }
 .setting{ background-color: rgba(47, 48, 48, 0.9); position: fixed; left: 0%; top : 0%; width : 80px; padding: 20px ; height: 100vh; margin: 0 auto; box-shadow: 4px 0 15px rgba(0,0,0,0.3); }
-.text{ background-color: rgba(47, 48, 48, 0.9); overflow-y: auto; width : 850px; padding: 50px ; min-height: 100vh; margin-left: 180px; }
+.text{ background-color: rgba(47, 48, 48, 0.9); width : 850px; padding: 50px ; min-height: 100vh; margin-left: 180px; }
 .setting img{ width: 80px; height: 80px; border-radius: 50%; }
 h1, p, a { color: white; }
 .story-display { font-size: 18px; line-height: 1.6; margin-top: 20px; }
+.image-container img {
+    display: block;
+    max-width: 100%; /* 图片宽度最大不超过文字框 */
+    height: auto;
+    margin: 20px 0;
+    border-radius: 8px; /* 圆角看起来更像游戏 */
+    animation: fadeIn 0.8s ease-in-out;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0; /* 开始时完全透明 */
+    }
+    to {
+        opacity: 1; /* 结束时完全不透明 */
+    }
+}
+.text img{
+  transition: transform 0.67s ease;
+  margin: 6px;
+}
+
+.text img:hover{
+  transform: scale(1.02);
+}
+.story-display {
+    overflow-y: auto; /* 允许垂直滚动 */
+}
+.屏幕部分 {
+    position: fixed;
+   
+}
+    
 </style>
 </head>
 <body>
@@ -24,18 +56,18 @@ h1, p, a { color: white; }
 <div id="Explanation" class="text content-route">
     <h1>EXPLANATION</h1>
     <p>There is a light novel about...</p>
-    <p style="font-size: 10px;">(well, i don't even know what am i going to write about)</p>
-    <p>The idea is from the <a href="https://store.steampowered.com/app/888790/Sabbat_of_the_Witch/" target="_blank">SABBAT OF THE WITCH</a></p>
-    <button onclick="showRoute('route1')">Start reading</button>
+    <p style="font-size: 10px;">(well, i don't even know what am i going to write about)</p><p>The idea is from the <a href="https://store.steampowered.com/app/888790/Sabbat_of_the_Witch/" target="_blank">SABBAT OF THE WITCH</a></p><button onclick="showRoute('route1')">Start reading</button>
 </div>
 
 <div id="route1" class="text content-route" style="display: none;"
-     data-story="It was just a normal morning. I woke up from a dream and suddenly realized—today was my first day of high school.
-    
- i feel a little excited,i am looking forward my new classmates">
-     
-    <h1>1-1</h1>
-    <p class="story-display"></p> <button onclick="showRoute('Explanation')">back</button>
+     data-story="It was just a normal morning. I woke up from a dream and suddenly realized—today was my first day of high school.[IMG:自室_自室A.png]
+     <br><br>i feel a little excited,i am looking forward my new classmates">
+<div class="屏幕部分"></div>
+<h1>1-1</h1>
+<div class="image-container">
+</div>
+<p class="story-display"></p> 
+<button onclick="showRoute('Explanation')">back</button>
 </div>
 
 <script>
@@ -43,10 +75,37 @@ h1, p, a { color: white; }
 function typeWriter(element, text, speed = 50) {
     let i = 0;
     element.innerHTML = "";
+    
+    // 修改点 2: 定义 imgBox。在 element (也就是那个 p 标签) 的父元素里找图片盒子
+    const imgBox = element.parentElement.querySelector('.image-container');
+    
+    // 每次开始前清空之前的图片
+    if (imgBox) imgBox.innerHTML = "";
+
     function type() {
         if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
+            // 处理换行
+            if (text.substring(i, i + 4) === "<br>") {
+                element.innerHTML += "<br>";
+                i += 4;
+            } 
+            // 处理图片
+            else if (text.substring(i, i + 5) === "[IMG:") {
+                let endBracket = text.indexOf("]", i);
+                let fileName = text.substring(i + 5, endBracket);
+                
+                if (imgBox) {
+                    // 修改点 3: 确保路径正确 (注意你的文件夹名 114514)
+                    imgBox.innerHTML = `<img src="114514/${fileName}">`;
+                }
+                
+                i = endBracket + 1;
+            }
+            else {
+                element.innerHTML += text.charAt(i);
+                i++;
+            }
+    
             setTimeout(type, speed);
         }
     }
@@ -55,27 +114,23 @@ function typeWriter(element, text, speed = 50) {
 
 // 路由切换函数
 function showRoute(routeId) {
-    // 1. 隐藏所有
     const allRoutes = document.querySelectorAll('.content-route');
     allRoutes.forEach(route => {
         route.style.display = 'none';
     });
 
-    // 2. 显示指定的 ID
     const targetRoute = document.getElementById(routeId);
     if (targetRoute) {
         targetRoute.style.display = 'block';
 
-        // 3. 获取数据并执行打字机
         const storyText = targetRoute.getAttribute('data-story'); 
         const displayBox = targetRoute.querySelector('.story-display');
 
         if (storyText && displayBox) {
-            typeWriter(displayBox, storyText, 30); // 30ms 每个字符
+            typeWriter(displayBox, storyText, 30);
         }
-    } // 补齐 if 括号
-} // 补齐 function 括号
+    }
+}
 </script>
-
 </body>
 </html>
