@@ -45,8 +45,51 @@
     border: 1px solid white;
     border-radius: 4px;
     }
-   .按钮组 button:hover {
+   button:hover {
     background: rgba(70, 180, 253, 0.5); /* 悬停时变蓝色 */
+}/* 响应式适配：针对手机端 */
+@media (max-width: 768px) {
+    /* 1. 让大容器变为上下排列 */
+    .非setting部分 {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 100px; /* 缩小顶部间距 */
+        gap: 20px;
+    }
+
+    /* 2. 路由容器在手机端也改为纵向 */
+    #route1 {
+        flex-direction: column !important;
+        align-items: center;
+        width: 100%;
+    }
+
+    /* 3. 屏幕（图片区）适配手机宽度 */
+    .屏幕 {
+        width: 95vw;    /* 占屏幕宽度的 95% */
+        height: auto;   /* 高度根据内容自动 */
+        min-height: 300px;
+        padding: 10px;
+    }
+
+    /* 4. 文本框适配手机宽度 */
+    .文本框 {
+        width: 95vw;
+        height: 400px;  /* 手机上文本框高度固定，方便阅读 */
+        margin-left: 0; /* 取消左边距 */
+        margin-bottom: 50px; /* 底部留白 */
+    }
+
+    /* 5. 调整顶部导航栏高度 */
+    .setting {
+        height: 60px;
+    }
+    
+    /* 6. 调整 Explanation 页面宽度 */
+    #Explanation {
+        width: 90vw;
+        padding: 20px;
+    }
 }
 </style>
 </head>
