@@ -30,6 +30,24 @@
 
     /* 给 Explanation 界面单独加个样式，让它看起来正常点 */
     #Explanation { background: rgba(47, 48, 48, 0.9); padding: 50px; border-radius: 8px; width: 600px; }
+    .按钮组 {
+    display: flex;
+    justify-content: center; /* 居中显示 */
+    gap: 10px;               /* 两个按钮之间的空隙 */
+    width: 100%;             /* 占满文本框宽度 */}
+   .按钮组 button {
+    flex: 1;                 /* 两个按钮平分宽度 */
+    max-width: 100px;        /* 限制最大宽度，防止太长 */
+    padding: 8px;
+    cursor: pointer;
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 4px;
+    }
+   .按钮组 button:hover {
+    background: rgba(70, 180, 253, 0.5); /* 悬停时变蓝色 */
+}
 </style>
 </head>
 <body>
@@ -56,33 +74,50 @@
 
         <div class="文本框">
             <p class="story-display"></p> 
+        <div class="按钮组">
             <button onclick="showRoute('Explanation')">back</button>
+            <button onclick="togglePause()">pause</button>
+        </div>
         </div>
     </div> </div>
 
 <script>
+let isPaused = false;
+
+function togglePause() {
+    isPaused = !isPaused;
+    // 顺便改一下按钮文字
+    event.target.innerText = isPaused ? "Resume" : "Pause";
+}
+
+// 修改原有的 type 函数内部逻辑
 function typeWriter(element, text, speed = 50) {
     let i = 0;
+    isPaused = false; // 每次重新开始时重置状态
     element.innerHTML = "";
-    // 使用 closest 查找当前所在的路由容器，确保图片显示在正确的位置
+    
     const currentRoute = element.closest('.content-route');
     const imgBox = currentRoute.querySelector('.image-container');
-    
     if (imgBox) imgBox.innerHTML = "";
 
     function type() {
+        if (isPaused) {
+            // 如果暂停了，就每隔 100ms 重新检查一次，不继续打字
+            setTimeout(type, 100);
+            return;
+        }
+
         if (i < text.length) {
+            // ... 原有的打字逻辑保持不变 ...
             if (text.substring(i, i + 4) === "<br>") {
-                element.innerHTML += "<br>";
-                i += 4;
+                element.innerHTML += "<br>"; i += 4;
             } else if (text.substring(i, i + 5) === "[IMG:") {
                 let endBracket = text.indexOf("]", i);
                 let fileName = text.substring(i + 5, endBracket);
                 if (imgBox) imgBox.innerHTML = `<img src="114514/${fileName}">`;
                 i = endBracket + 1;
             } else {
-                element.innerHTML += text.charAt(i);
-                i++;
+                element.innerHTML += text.charAt(i); i++;
             }
             element.scrollTop = element.scrollHeight;
             setTimeout(type, speed);
