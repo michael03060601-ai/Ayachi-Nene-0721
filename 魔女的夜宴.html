@@ -31,11 +31,17 @@
 
     /* 给 Explanation 界面单独加个样式，让它看起来正常点 */
     #Explanation { background: rgba(47, 48, 48, 0.9); padding: 50px; border-radius: 8px; width: 600px; }
+    
     .按钮组 {
     display: flex;
-    justify-content: center; /* 居中显示 */
-    gap: 10px;               /* 两个按钮之间的空隙 */
-    width: 100%;             /* 占满文本框宽度 */}
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    /* 关键：把上面的空间占满，从而让自己固定在文本框最底部 */
+    margin-top: auto; 
+    padding-top: 20px;
+    padding-bottom: 5px;
+} 
    .按钮组 button {
     flex: 1;                 /* 两个按钮平分宽度 */
     max-width: 100px;        /* 限制最大宽度，防止太长 */
@@ -45,6 +51,7 @@
     color: white;
     border: 1px solid white;
     border-radius: 4px;
+    
     }
    button:hover {
     background: rgba(70, 180, 253, 0.5); /* 悬停时变蓝色 */
@@ -93,6 +100,28 @@
         padding: 10px;
     }
 }
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 30px;    /* 与上方文字的间距 */
+    margin-bottom: 20px; /* 与下方 Back/Pause 按钮的间距 */
+}
+}
+.option-btn {
+    background: rgba(70, 180, 253, 0.2);
+    border: 1px solid #46b4fd;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s;
+    animation: fadeIn 0.5s; /* 出现时有个小动画 */
+}
+.option-btn:hover {
+    background: rgba(70, 180, 253, 0.6);
+}
 </style>
 </head>
 <body>
@@ -109,8 +138,15 @@
         <p>There is a light novel about...</p>
         <button onclick="showRoute('route1')">Start reading</button>
     </div> <div id="route1" class="content-route" 
-         data-story="[IMG:自室_自室A.png]It was just a normal morning. I woke up from a dream and suddenly realized—today was my first day of high school.
-         <br><br>i feel a little excited...">
+         data-story="[IMG:自室_自室A.png](Beep-beep-beep!)   (alarm) 
+         <br>Ugh... what s that noise? Don t get between me and Ms. Blanket...
+<br>(Zzz... Zzz...)
+
+<br>(Beep-beep-beep!)
+
+<br>Ugh...! 
+
+">
         
         <div class="屏幕">
             <h1>1-1</h1>
@@ -119,6 +155,8 @@
 
         <div class="文本框">
             <p class="story-display"></p> 
+            <div id="options-route1" class="options-container"></div>
+
         <div class="按钮组">
             <button onclick="showRoute('Explanation')">back</button>
             <button onclick="togglePause()">pause</button>
@@ -127,33 +165,31 @@
     </div> </div>
 
 <script>
-let isPaused = false;
+    let isPaused = false; // 必须定义这个全局变量
 
 function togglePause() {
     isPaused = !isPaused;
-    // 顺便改一下按钮文字
-    event.target.innerText = isPaused ? "Resume" : "Pause";
+    // 更新按钮文字
+    if (window.event) {
+        window.event.target.innerText = isPaused ? "Resume" : "Pause";
+    }
 }
-
-// 修改原有的 type 函数内部逻辑
 function typeWriter(element, text, speed = 50) {
     let i = 0;
-    isPaused = false; // 每次重新开始时重置状态
+    isPaused = false;
     element.innerHTML = "";
-    
     const currentRoute = element.closest('.content-route');
     const imgBox = currentRoute.querySelector('.image-container');
+    const optBox = currentRoute.querySelector('.options-container'); // 找到选项盒
+    
     if (imgBox) imgBox.innerHTML = "";
+    if (optBox) optBox.innerHTML = ""; // 切换路由时清空选项
 
     function type() {
-        if (isPaused) {
-            // 如果暂停了，就每隔 100ms 重新检查一次，不继续打字
-            setTimeout(type, 100);
-            return;
-        }
+        if (isPaused) { setTimeout(type, 100); return; }
 
         if (i < text.length) {
-            // ... 原有的打字逻辑保持不变 ...
+            // ... 你原有的打字逻辑 (IMG处理、BR处理等) ...
             if (text.substring(i, i + 4) === "<br>") {
                 element.innerHTML += "<br>"; i += 4;
             } else if (text.substring(i, i + 5) === "[IMG:") {
@@ -166,6 +202,14 @@ function typeWriter(element, text, speed = 50) {
             }
             element.scrollTop = element.scrollHeight;
             setTimeout(type, speed);
+        } else {
+            // --- 核心修改：字打完了，显示按钮 ---
+            if (currentRoute.id === 'route1') {
+                optBox.innerHTML = `
+                    <button class="option-btn" onclick="showRoute('route_school')">I have to get up</button>
+                    <button class="option-btn" onclick="showRoute('route_sleep')">Just five more minutes</button>
+                `;
+            }
         }
     }
     type();
@@ -182,7 +226,7 @@ function showRoute(routeId) {
     const targetRoute = document.getElementById(routeId);
     if (targetRoute) {
         // 如果是剧情页，使用 flex 实现并列；如果是说明页，使用 block 居中
-        targetRoute.style.display = (routeId === 'route1') ? 'flex' : 'block';
+        targetRoute.style.display = routeId.includes('route') ? 'flex' : 'block';
         
         // 只有在 route1 时才触发打字机
         const storyText = targetRoute.getAttribute('data-story'); 
